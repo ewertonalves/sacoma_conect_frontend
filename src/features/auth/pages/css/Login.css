@@ -1,0 +1,42 @@
+@import "tailwindcss" reference;
+
+/* Login Header */
+.login-header {
+  @apply text-center mb-6;
+}
+
+.login-logo {
+  margin: -23px 0px -50px 0px;
+  width: 420px;
+}
+
+.login-title {
+  @apply text-3xl font-bold text-gray-900;
+}
+
+.login-subtitle {
+  @apply mt-2 text-sm text-gray-600;
+}
+
+/* Login Form */
+.login-form {
+  @apply space-y-4;
+}
+
+.login-button {
+  @apply w-full;
+}
+
+/* Login Footer */
+.login-footer {
+  @apply mt-4 text-center;
+}
+
+.login-footer-text {
+  @apply text-sm text-gray-600;
+}
+
+.login-footer-link {
+  @apply text-blue-600 hover:text-blue-700 font-medium;
+}
+

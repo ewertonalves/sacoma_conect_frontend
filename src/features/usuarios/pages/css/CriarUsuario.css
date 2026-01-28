@@ -1,0 +1,29 @@
+@import "tailwindcss" reference;
+
+/* Criar Usuario Container */
+.criar-usuario-container {
+  @apply space-y-6;
+}
+
+.criar-usuario-header {
+  @apply space-y-1;
+}
+
+.criar-usuario-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.criar-usuario-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+/* Form */
+.criar-usuario-form {
+  @apply space-y-4;
+}
+
+/* Form Actions */
+.criar-usuario-actions {
+  @apply flex gap-2 justify-end;
+}
+

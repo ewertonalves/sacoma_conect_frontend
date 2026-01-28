@@ -1,0 +1,61 @@
+@import "tailwindcss" reference;
+
+/* Lista Usuarios Container */
+.lista-usuarios-container {
+  @apply space-y-6;
+}
+
+.lista-usuarios-header {
+  @apply flex items-center justify-between;
+}
+
+.lista-usuarios-header-content {
+  @apply space-y-1;
+}
+
+.lista-usuarios-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.lista-usuarios-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+/* Search */
+.lista-usuarios-search {
+  @apply mb-4;
+}
+
+/* Pagination */
+.lista-usuarios-pagination {
+  @apply mt-6 pt-6 border-t border-gray-200;
+}
+
+.lista-usuarios-pagination-container {
+  @apply flex flex-col sm:flex-row items-center justify-between gap-4;
+}
+
+.lista-usuarios-pagination-items-per-page {
+  @apply flex items-center gap-2;
+}
+
+.lista-usuarios-pagination-items-label {
+  @apply text-sm text-gray-700;
+}
+
+.lista-usuarios-pagination-info {
+  @apply flex items-center gap-2;
+}
+
+.lista-usuarios-pagination-info-text {
+  @apply text-sm text-gray-700;
+}
+
+.lista-usuarios-pagination-controls {
+  @apply flex items-center gap-2;
+}
+
+.lista-usuarios-pagination-numbers {
+  @apply flex items-center gap-1;
+}
+

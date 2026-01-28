@@ -1,0 +1,198 @@
+@import "tailwindcss" reference;
+
+.gerenciar-permissoes-container {
+  @apply space-y-6;
+}
+
+.gerenciar-permissoes-header {
+  @apply flex items-center justify-between;
+}
+
+.gerenciar-permissoes-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.gerenciar-permissoes-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+.gerenciar-permissoes-content {
+  @apply space-y-6;
+}
+
+.gerenciar-permissoes-usuario-select {
+  @apply max-w-md;
+}
+
+.gerenciar-permissoes-usuario-select-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.gerenciar-permissoes-usuario-select-container {
+  @apply relative;
+}
+
+.gerenciar-permissoes-usuario-select-button {
+  @apply w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed border-gray-300 px-3 py-2 text-base flex items-center justify-between bg-white;
+}
+
+.gerenciar-permissoes-usuario-select-text {
+  @apply text-gray-900;
+}
+
+.gerenciar-permissoes-usuario-select-text-placeholder {
+  @apply text-gray-500;
+}
+
+.gerenciar-permissoes-usuario-select-icon {
+  @apply w-4 h-4 text-gray-400 transition-transform;
+}
+
+.gerenciar-permissoes-usuario-select-icon-open {
+  @apply rotate-180;
+}
+
+.gerenciar-permissoes-usuario-dropdown {
+  @apply absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-hidden;
+}
+
+.gerenciar-permissoes-usuario-search-container {
+  @apply p-2 border-b border-gray-200;
+}
+
+.gerenciar-permissoes-usuario-search-wrapper {
+  @apply relative;
+}
+
+.gerenciar-permissoes-usuario-search-icon {
+  @apply absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400;
+}
+
+.gerenciar-permissoes-usuario-search-clear {
+  @apply absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600;
+}
+
+.gerenciar-permissoes-usuario-options {
+  @apply max-h-48 overflow-y-auto;
+}
+
+.gerenciar-permissoes-usuario-option {
+  @apply w-full text-left px-3 py-2 text-sm hover:bg-gray-100;
+}
+
+.gerenciar-permissoes-usuario-option-selected {
+  @apply bg-blue-50 text-blue-600;
+}
+
+.gerenciar-permissoes-usuario-option-normal {
+  @apply text-gray-900;
+}
+
+.gerenciar-permissoes-usuario-empty {
+  @apply px-3 py-2 text-sm text-gray-500 text-center;
+}
+
+.gerenciar-permissoes-telas {
+  @apply space-y-4;
+}
+
+.gerenciar-permissoes-usuario-info {
+  @apply p-4 bg-gray-50 rounded-lg border border-gray-200;
+}
+
+.gerenciar-permissoes-usuario-nome {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.gerenciar-permissoes-usuario-email {
+  @apply text-sm text-gray-600 mt-1;
+}
+
+.gerenciar-permissoes-telas-list {
+  @apply space-y-3;
+}
+
+.gerenciar-permissoes-telas-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.gerenciar-permissoes-telas-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3;
+}
+
+.gerenciar-permissoes-tela-item {
+  @apply p-4 border-2 border-gray-200 rounded-lg cursor-pointer transition-all hover:border-blue-300 hover:bg-blue-50;
+}
+
+.gerenciar-permissoes-tela-item.permitida {
+  @apply border-green-300 bg-green-50;
+}
+
+.gerenciar-permissoes-tela-checkbox {
+  @apply flex items-center justify-center w-8 h-8 rounded-full border-2 border-gray-300 mb-3;
+}
+
+.gerenciar-permissoes-tela-item.permitida .gerenciar-permissoes-tela-checkbox {
+  @apply border-green-500 bg-green-100;
+}
+
+.gerenciar-permissoes-tela-content {
+  @apply space-y-1;
+}
+
+.gerenciar-permissoes-tela-nome {
+  @apply font-semibold text-gray-900;
+}
+
+.gerenciar-permissoes-tela-descricao {
+  @apply text-sm text-gray-600;
+}
+
+.gerenciar-permissoes-tela-rota {
+  @apply text-xs text-gray-500 font-mono;
+}
+
+.gerenciar-permissoes-actions {
+  @apply flex items-center justify-end gap-3 pt-4 border-t border-gray-200;
+}
+
+.gerenciar-permissoes-empty {
+  @apply text-center py-8 text-gray-500;
+}
+
+/* Accordion Styles */
+.gerenciar-permissoes-accordion {
+  @apply space-y-2;
+}
+
+.gerenciar-permissoes-accordion-item {
+  @apply border border-gray-200 rounded-lg overflow-hidden;
+}
+
+.gerenciar-permissoes-accordion-button {
+  @apply w-full bg-gray-100 text-gray-900 cursor-pointer p-4 text-left outline-none transition-all duration-300 flex items-center justify-between hover:bg-gray-200;
+}
+
+.gerenciar-permissoes-accordion-button.active {
+  @apply bg-gray-200;
+}
+
+.gerenciar-permissoes-accordion-title {
+  @apply font-semibold text-base;
+}
+
+.gerenciar-permissoes-accordion-icon {
+  @apply w-5 h-5 text-gray-600 transition-transform duration-300;
+}
+
+.gerenciar-permissoes-accordion-icon-open {
+  @apply rotate-180;
+}
+
+.gerenciar-permissoes-accordion-panel {
+  @apply max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-white;
+}
+
+.gerenciar-permissoes-accordion-panel-open {
+  @apply max-h-[5000px] p-4;
+}

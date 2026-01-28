@@ -1,0 +1,143 @@
+/* stylelint-disable at-rule-no-unknown */
+@import "tailwindcss" reference;
+
+/* Dashboard Container */
+.dashboard-container {
+  @apply space-y-6;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  @apply space-y-1;
+}
+
+.dashboard-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.dashboard-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+/* Cards Grid */
+.dashboard-cards-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+}
+
+.dashboard-card-content {
+  @apply flex items-center justify-between;
+}
+
+.dashboard-card-info {
+  @apply flex-1;
+}
+
+.dashboard-card-title {
+  @apply text-sm font-medium text-gray-600;
+}
+
+.dashboard-card-value {
+  @apply mt-2 text-2xl font-bold text-gray-900;
+}
+
+.dashboard-card-icon-wrapper {
+  @apply p-3 rounded-lg;
+}
+
+.dashboard-card-icon {
+  @apply w-6 h-6;
+}
+
+/* Card Colors */
+.dashboard-card-icon-blue {
+  @apply text-blue-600;
+}
+
+.dashboard-card-icon-green {
+  @apply text-green-600;
+}
+
+.dashboard-card-icon-red {
+  @apply text-red-600;
+}
+
+.dashboard-card-bg-blue {
+  @apply bg-blue-50;
+}
+
+.dashboard-card-bg-green {
+  @apply bg-green-50;
+}
+
+.dashboard-card-bg-red {
+  @apply bg-red-50;
+}
+
+/* Content Grid */
+.dashboard-content-grid {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-6;
+}
+
+/* Section Header */
+.dashboard-section-header {
+  @apply flex items-center justify-between mb-4;
+}
+
+.dashboard-section-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.dashboard-section-subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.dashboard-section-header-content {
+  @apply space-y-1;
+}
+
+/* Empty State */
+.dashboard-empty-state {
+  @apply text-center py-8 text-gray-500;
+}
+
+/* Financial Summary */
+.dashboard-financial-summary {
+  @apply mb-4;
+}
+
+.dashboard-summary-item {
+  @apply flex items-center justify-between p-3 bg-gray-50 rounded-lg;
+}
+
+.dashboard-summary-label {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.dashboard-summary-value-green {
+  @apply text-lg font-bold text-green-600;
+}
+
+.dashboard-summary-value-red {
+  @apply text-lg font-bold text-red-600;
+}
+
+.dashboard-summary-total {
+  @apply flex items-center justify-between p-4 bg-blue-50 rounded-lg border-2 border-blue-200;
+}
+
+.dashboard-summary-total-label {
+  @apply text-base font-semibold text-gray-900;
+}
+
+.dashboard-summary-total-value-green {
+  @apply text-xl font-bold text-green-600;
+}
+
+.dashboard-summary-total-value-red {
+  @apply text-xl font-bold text-red-600;
+}
+
+.dashboard-summary-list {
+  @apply space-y-4;
+}
+

@@ -1,0 +1,118 @@
+@import "tailwindcss" reference;
+
+/* Cadastrar Financeiro Container */
+.cadastrar-financeiro-container {
+  @apply space-y-6;
+}
+
+.cadastrar-financeiro-header {
+  @apply space-y-1;
+}
+
+.cadastrar-financeiro-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.cadastrar-financeiro-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+/* Form */
+.cadastrar-financeiro-form {
+  @apply space-y-4;
+}
+
+.cadastrar-financeiro-values-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+/* Membro Select */
+.cadastrar-financeiro-membro-select-wrapper {
+  @apply w-full;
+}
+
+.cadastrar-financeiro-membro-select-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.cadastrar-financeiro-membro-select-container {
+  @apply relative;
+}
+
+.cadastrar-financeiro-membro-select-button {
+  @apply w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed px-3 py-2 text-base flex items-center justify-between bg-white;
+}
+
+.cadastrar-financeiro-membro-select-button-error {
+  @apply border-red-500;
+}
+
+.cadastrar-financeiro-membro-select-button-normal {
+  @apply border-gray-300;
+}
+
+.cadastrar-financeiro-membro-select-text {
+  @apply text-gray-900;
+}
+
+.cadastrar-financeiro-membro-select-text-placeholder {
+  @apply text-gray-500;
+}
+
+.cadastrar-financeiro-membro-select-icon {
+  @apply w-4 h-4 text-gray-400 transition-transform;
+}
+
+.cadastrar-financeiro-membro-select-icon-open {
+  @apply rotate-180;
+}
+
+.cadastrar-financeiro-membro-dropdown {
+  @apply absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-hidden;
+}
+
+.cadastrar-financeiro-membro-search-container {
+  @apply p-2 border-b border-gray-200;
+}
+
+.cadastrar-financeiro-membro-search-wrapper {
+  @apply relative;
+}
+
+.cadastrar-financeiro-membro-search-icon {
+  @apply absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400;
+}
+
+.cadastrar-financeiro-membro-search-clear {
+  @apply absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600;
+}
+
+.cadastrar-financeiro-membro-options {
+  @apply max-h-48 overflow-y-auto;
+}
+
+.cadastrar-financeiro-membro-option {
+  @apply w-full text-left px-3 py-2 text-sm hover:bg-gray-100;
+}
+
+.cadastrar-financeiro-membro-option-selected {
+  @apply bg-blue-50 text-blue-600;
+}
+
+.cadastrar-financeiro-membro-option-normal {
+  @apply text-gray-900;
+}
+
+.cadastrar-financeiro-membro-empty {
+  @apply px-3 py-2 text-sm text-gray-500 text-center;
+}
+
+.cadastrar-financeiro-membro-error {
+  @apply mt-1 text-sm text-red-600;
+}
+
+/* Form Actions */
+.cadastrar-financeiro-actions {
+  @apply flex gap-2 justify-end;
+}
+

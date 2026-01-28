@@ -1,0 +1,69 @@
+@import "tailwindcss" reference;
+
+/* Detalhes Financeiro Container */
+.detalhes-financeiro-container {
+  @apply space-y-6;
+}
+
+.detalhes-financeiro-header {
+  @apply flex items-center justify-between;
+}
+
+.detalhes-financeiro-header-content {
+  @apply space-y-1;
+}
+
+.detalhes-financeiro-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.detalhes-financeiro-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+.detalhes-financeiro-actions {
+  @apply flex gap-2;
+}
+
+/* Info Grid */
+.detalhes-financeiro-info-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.detalhes-financeiro-info-item {
+  @apply space-y-1;
+}
+
+.detalhes-financeiro-info-label {
+  @apply text-sm font-medium text-gray-500;
+}
+
+.detalhes-financeiro-info-value {
+  @apply mt-1 text-base text-gray-900;
+}
+
+.detalhes-financeiro-info-value-green {
+  @apply mt-1 text-base text-green-600 font-semibold;
+}
+
+.detalhes-financeiro-info-value-red {
+  @apply mt-1 text-base text-red-600 font-semibold;
+}
+
+.detalhes-financeiro-info-value-saldo-positive {
+  @apply mt-1 text-base font-semibold text-green-600;
+}
+
+.detalhes-financeiro-info-value-saldo-negative {
+  @apply mt-1 text-base font-semibold text-red-600;
+}
+
+.detalhes-financeiro-info-full-width {
+  @apply md:col-span-2;
+}
+
+/* Membro Link */
+.detalhes-financeiro-membro-link {
+  @apply text-blue-600 hover:text-blue-700 underline;
+}
+

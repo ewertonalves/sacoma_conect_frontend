@@ -1,0 +1,29 @@
+@import "tailwindcss" reference;
+
+/* Editar Usuario Container */
+.editar-usuario-container {
+  @apply space-y-6;
+}
+
+.editar-usuario-header {
+  @apply space-y-1;
+}
+
+.editar-usuario-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.editar-usuario-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+/* Form */
+.editar-usuario-form {
+  @apply space-y-4;
+}
+
+/* Form Actions */
+.editar-usuario-actions {
+  @apply flex gap-2 justify-end;
+}
+

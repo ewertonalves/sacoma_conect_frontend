@@ -1,0 +1,61 @@
+@import "tailwindcss" reference;
+
+/* Lista Membros Container */
+.lista-membros-container {
+  @apply space-y-6;
+}
+
+.lista-membros-header {
+  @apply flex items-center justify-between;
+}
+
+.lista-membros-header-content {
+  @apply space-y-1;
+}
+
+.lista-membros-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.lista-membros-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+/* Search */
+.lista-membros-search {
+  @apply mb-4;
+}
+
+/* Pagination */
+.lista-membros-pagination {
+  @apply mt-6 pt-6 border-t border-gray-200;
+}
+
+.lista-membros-pagination-container {
+  @apply flex flex-col sm:flex-row items-center justify-between gap-4;
+}
+
+.lista-membros-pagination-items-per-page {
+  @apply flex items-center gap-2;
+}
+
+.lista-membros-pagination-items-label {
+  @apply text-sm text-gray-700;
+}
+
+.lista-membros-pagination-info {
+  @apply flex items-center gap-2;
+}
+
+.lista-membros-pagination-info-text {
+  @apply text-sm text-gray-700;
+}
+
+.lista-membros-pagination-controls {
+  @apply flex items-center gap-2;
+}
+
+.lista-membros-pagination-numbers {
+  @apply flex items-center gap-1;
+}
+

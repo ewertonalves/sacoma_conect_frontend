@@ -1,0 +1,41 @@
+@import "tailwindcss" reference;
+
+.detalhes-assistencia-social-container {
+  @apply space-y-6;
+}
+
+.detalhes-assistencia-social-header {
+  @apply flex items-center justify-between;
+}
+
+.detalhes-assistencia-social-header-content {
+  @apply space-y-1;
+}
+
+.detalhes-assistencia-social-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.detalhes-assistencia-social-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+.detalhes-assistencia-social-actions {
+  @apply flex items-center gap-3;
+}
+
+.detalhes-assistencia-social-info-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.detalhes-assistencia-social-info-item {
+  @apply space-y-1;
+}
+
+.detalhes-assistencia-social-info-label {
+  @apply text-sm font-medium text-gray-500;
+}
+
+.detalhes-assistencia-social-info-value {
+  @apply text-base text-gray-900;
+}

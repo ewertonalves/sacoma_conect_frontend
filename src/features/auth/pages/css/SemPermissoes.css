@@ -1,0 +1,56 @@
+.sem-permissoes-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 8rem);
+  padding: 1rem;
+  width: 100%;
+}
+
+.sem-permissoes-card {
+  max-width: 42rem;
+  width: 100%;
+}
+
+.sem-permissoes-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+}
+
+.sem-permissoes-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.sem-permissoes-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.sem-permissoes-message {
+  font-size: 1.125rem;
+  color: #374151;
+  margin: 0;
+}
+
+.sem-permissoes-description {
+  font-size: 1rem;
+  color: #4b5563;
+  max-width: 32rem;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+.sem-permissoes-info {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-style: italic;
+  margin-top: 1rem;
+  margin: 0;
+}

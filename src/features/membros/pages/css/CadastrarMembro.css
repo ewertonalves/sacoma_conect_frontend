@@ -1,0 +1,50 @@
+@import "tailwindcss" reference;
+
+/* Cadastrar Membro Container */
+.cadastrar-membro-container {
+  @apply space-y-6;
+}
+
+.cadastrar-membro-header {
+  @apply space-y-1;
+}
+
+.cadastrar-membro-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.cadastrar-membro-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+/* Form */
+.cadastrar-membro-form {
+  @apply space-y-6;
+}
+
+.cadastrar-membro-section-title {
+  @apply text-lg font-semibold text-gray-900 mb-4;
+}
+
+.cadastrar-membro-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+/* CEP Loading */
+.cadastrar-membro-cep-wrapper {
+  @apply relative;
+}
+
+.cadastrar-membro-cep-loading {
+  @apply absolute right-3 top-9;
+}
+
+.cadastrar-membro-cep-spinner {
+  @apply animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600;
+}
+
+/* Form Actions */
+.cadastrar-membro-actions {
+  @apply flex gap-2 justify-end;
+}
+

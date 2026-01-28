@@ -1,0 +1,44 @@
+@import "tailwindcss" reference;
+
+/* Detalhes Membro Container */
+.detalhes-membro-container {
+  @apply space-y-6;
+}
+
+.detalhes-membro-header {
+  @apply flex items-center justify-between;
+}
+
+.detalhes-membro-header-content {
+  @apply space-y-1;
+}
+
+.detalhes-membro-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.detalhes-membro-subtitle {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+.detalhes-membro-actions {
+  @apply flex gap-2;
+}
+
+/* Info Grid */
+.detalhes-membro-info-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.detalhes-membro-info-item {
+  @apply space-y-1;
+}
+
+.detalhes-membro-info-label {
+  @apply text-sm font-medium text-gray-500;
+}
+
+.detalhes-membro-info-value {
+  @apply mt-1 text-base text-gray-900;
+}
+
