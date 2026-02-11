@@ -1,16 +1,18 @@
-import { SelectHTMLAttributes, forwardRef } from 'react';
+import { forwardRef } from 'react';
+import type { SelectHTMLAttributes } from 'react';
 
 export interface SelectOption {
   value: string | number;
   label: string;
 }
 
-export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
   label?: string;
   error?: string;
   helperText?: string;
   options: SelectOption[];
   size?: 'small' | 'medium' | 'large';
+  placeholder?: string;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -23,6 +25,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       size = 'medium',
       className = '',
       required,
+      placeholder,
       ...props
     },
     ref
@@ -54,9 +57,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           required={required}
           {...props}
         >
-          {props.placeholder && (
+          {placeholder && (
             <option value="" disabled>
-              {props.placeholder}
+              {placeholder}
             </option>
           )}
           {options.map((option) => (
