@@ -14,9 +14,12 @@ import { Badge } from '../../../shared/ui/Badge/Badge';
 import { ConfirmModal } from '../../../shared/ui/ConfirmModal/ConfirmModal';
 import { useUIStore } from '../../../app/stores/uiStore';
 import { useAuthStore } from '../../../app/stores/authStore';
-import { TIPO_FINANCEIRO_LABELS, TIPO_FINANCEIRO_COLORS, TIPOS_FINANCEIRO } from '../../../shared/lib/constants';
+import { TIPO_FINANCEIRO_LABELS, TIPO_FINANCEIRO_COLORS, TIPOS_FINANCEIRO, TIPO_PERIODO_RELATORIO_LABELS } from '../../../shared/lib/constants';
 import { formatCurrency } from '../../../shared/lib/formatters';
-import { Eye, Edit, Trash2, DollarSign, ChevronLeft, ChevronRight, Search, X, ChevronDown } from 'lucide-react';
+import { Eye, Edit, Trash2, DollarSign, ChevronLeft, ChevronRight, Search, X, ChevronDown, FileDown } from 'lucide-react';
+import { Modal } from '../../../shared/ui/Modal/Modal';
+import { downloadRelatorioPdf } from '../utils/relatorioPdf';
+import type { TipoPeriodoRelatorio } from '../../../shared/types';
 import './css/ListaFinanceiro.css';
 
 export const ListaFinanceiro = () => {
@@ -38,6 +41,11 @@ export const ListaFinanceiro = () => {
   const [membroSelectOpen, setMembroSelectOpen] = useState(false);
   const membroSelectRef = useRef<HTMLDivElement>(null);
   const isInitialLoadRef = useRef(true);
+  const [relatorioModalOpen, setRelatorioModalOpen] = useState(false);
+  const [relatorioTipoPeriodo, setRelatorioTipoPeriodo] = useState<TipoPeriodoRelatorio>('MENSAL');
+  const [relatorioDataInicial, setRelatorioDataInicial] = useState('');
+  const [relatorioDataFinal, setRelatorioDataFinal] = useState('');
+  const [relatorioLoading, setRelatorioLoading] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -248,6 +256,46 @@ export const ListaFinanceiro = () => {
     setMembroSearchTerm('');
   };
 
+  const handleGerarRelatorioPdf = async () => {
+    if (!relatorioDataInicial.trim()) {
+      showNotification({ type: 'error', message: 'Informe a data inicial.' });
+      return;
+    }
+    if (relatorioTipoPeriodo === 'PERSONALIZADO' && !relatorioDataFinal.trim()) {
+      showNotification({ type: 'error', message: 'Para período personalizado, informe a data final.' });
+      return;
+    }
+    if (relatorioTipoPeriodo === 'PERSONALIZADO' && relatorioDataFinal < relatorioDataInicial) {
+      showNotification({ type: 'error', message: 'A data final deve ser igual ou posterior à data inicial.' });
+      return;
+    }
+    try {
+      setRelatorioLoading(true);
+      const data = await financeiroService.getRelatorio(
+        relatorioDataInicial,
+        relatorioTipoPeriodo,
+        relatorioTipoPeriodo === 'PERSONALIZADO' ? relatorioDataFinal : undefined
+      );
+      downloadRelatorioPdf(data);
+      showNotification({ type: 'success', message: 'Relatório gerado e download iniciado.' });
+      setRelatorioModalOpen(false);
+      setRelatorioDataInicial('');
+      setRelatorioDataFinal('');
+    } catch (error: any) {
+      showNotification({
+        type: 'error',
+        message: error?.message || 'Erro ao gerar relatório.',
+      });
+    } finally {
+      setRelatorioLoading(false);
+    }
+  };
+
+  const relatorioPeriodoOptions = (['SEMANAL', 'MENSAL', 'PERSONALIZADO'] as TipoPeriodoRelatorio[]).map((k) => ({
+    value: k,
+    label: TIPO_PERIODO_RELATORIO_LABELS[k] || k,
+  }));
+
   return (
     <div className="lista-financeiro-container">
       <div className="lista-financeiro-header">
@@ -255,14 +303,23 @@ export const ListaFinanceiro = () => {
           <h1 className="lista-financeiro-title">Registros Financeiros</h1>
           <p className="lista-financeiro-subtitle">Gerenciar registros financeiros</p>
         </div>
-        {(role === 'ADMIN' || hasPermissao('financeiro-novo')) && (
+        <div className="lista-financeiro-header-actions">
           <Button
-            onClick={() => navigate('/financeiro/novo')}
-            icon={<DollarSign className="w-4 h-4" />}
+            variant="outline"
+            onClick={() => setRelatorioModalOpen(true)}
+            icon={<FileDown className="w-4 h-4" />}
           >
-            Novo Registro
+            Relatório PDF
           </Button>
-        )}
+          {(role === 'ADMIN' || hasPermissao('financeiro-novo')) && (
+            <Button
+              onClick={() => navigate('/financeiro/novo')}
+              icon={<DollarSign className="w-4 h-4" />}
+            >
+              Novo Registro
+            </Button>
+          )}
+        </div>
       </div>
 
       <Card>
@@ -504,6 +561,58 @@ export const ListaFinanceiro = () => {
         variant="danger"
         loading={deleting}
       />
+
+      <Modal
+        open={relatorioModalOpen}
+        onClose={() => !relatorioLoading && setRelatorioModalOpen(false)}
+        title="Gerar relatório em PDF"
+        size="medium"
+        closable={!relatorioLoading}
+        footer={
+          <div className="lista-financeiro-relatorio-modal-footer">
+            <Button variant="outline" onClick={() => setRelatorioModalOpen(false)} disabled={relatorioLoading}>
+              Cancelar
+            </Button>
+            <Button onClick={handleGerarRelatorioPdf} loading={relatorioLoading} disabled={relatorioLoading} icon={<FileDown className="w-4 h-4" />}>
+              Gerar e baixar PDF
+            </Button>
+          </div>
+        }
+      >
+        <div className="lista-financeiro-relatorio-modal-body">
+          <p className="lista-financeiro-relatorio-modal-desc">
+            Escolha o período e o tipo do relatório. Os dados serão buscados no servidor e o PDF montado no navegador.
+          </p>
+          <Select
+            label="Tipo de período"
+            options={relatorioPeriodoOptions}
+            value={relatorioTipoPeriodo}
+            onChange={(e) => setRelatorioTipoPeriodo(e.target.value as TipoPeriodoRelatorio)}
+          />
+          <div className="lista-financeiro-relatorio-dates">
+            <div className="lista-financeiro-relatorio-date-field">
+              <label className="lista-financeiro-relatorio-label">Data inicial</label>
+              <input
+                type="date"
+                value={relatorioDataInicial}
+                onChange={(e) => setRelatorioDataInicial(e.target.value)}
+                className="lista-financeiro-relatorio-input"
+              />
+            </div>
+            {relatorioTipoPeriodo === 'PERSONALIZADO' && (
+              <div className="lista-financeiro-relatorio-date-field">
+                <label className="lista-financeiro-relatorio-label">Data final</label>
+                <input
+                  type="date"
+                  value={relatorioDataFinal}
+                  onChange={(e) => setRelatorioDataFinal(e.target.value)}
+                  className="lista-financeiro-relatorio-input"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

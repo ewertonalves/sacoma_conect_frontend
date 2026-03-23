@@ -31,16 +31,34 @@ export interface Membro {
 
 export type TipoFinanceiro = 'DIZIMO' | 'DESPESAS' | 'REFORMAS' | 'OFERTAS';
 
+export type TipoPeriodoRelatorio = 'SEMANAL' | 'MENSAL' | 'PERSONALIZADO';
+
+export interface MembroFinanceiroResponse {
+  id: number;
+  nome: string;
+  cpf: string;
+}
+
 export interface Financeiro {
   id: number;
   tipo: TipoFinanceiro;
   entrada: number;
   saida: number;
   saldo?: number;
-  membro?: Membro;
+  membro?: Membro | MembroFinanceiroResponse;
   membroId?: number;
   observacao?: string;
   dataRegistro: string;
+}
+
+export interface RelatorioFinanceiroResponse {
+  dataInicial: string;
+  dataFinal: string;
+  tipoPeriodo: TipoPeriodoRelatorio;
+  itens: Financeiro[];
+  totalEntrada: number;
+  totalSaida: number;
+  saldo: number;
 }
 
 export interface LoginRequest {

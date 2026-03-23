@@ -1,6 +1,6 @@
 import apiClient from '../../../shared/api/client';
 import { endpoints } from '../../../shared/api/endpoints';
-import type { Financeiro } from '../../../shared/types';
+import type { Financeiro, RelatorioFinanceiroResponse, TipoPeriodoRelatorio } from '../../../shared/types';
 
 export const financeiroService = {
   list: async (): Promise<Financeiro[]> => {
@@ -66,6 +66,21 @@ export const financeiroService = {
     } catch {
       return [];
     }
+  },
+
+  getRelatorio: async (
+    dataInicial: string,
+    tipoPeriodo: TipoPeriodoRelatorio,
+    dataFinal?: string
+  ): Promise<RelatorioFinanceiroResponse> => {
+    const response = await apiClient.get<{ data: RelatorioFinanceiroResponse }>(
+      endpoints.financeiro.relatorio({ dataInicial, dataFinal, tipoPeriodo })
+    );
+    const data = response.data?.data ?? response.data;
+    if (!data || !('itens' in data)) {
+      throw new Error('Resposta inválida do relatório');
+    }
+    return data;
   },
 };
 

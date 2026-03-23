@@ -29,6 +29,13 @@ export const endpoints = {
     create: '/financeiro',
     update: (id: number) => `/financeiro/${id}`,
     delete: (id: number) => `/financeiro/${id}`,
+    relatorio: (params: { dataInicial: string; dataFinal?: string; tipoPeriodo: string }) => {
+      const search = new URLSearchParams();
+      search.set('dataInicial', params.dataInicial);
+      if (params.dataFinal) search.set('dataFinal', params.dataFinal);
+      search.set('tipoPeriodo', params.tipoPeriodo);
+      return `/financeiro/relatorio?${search.toString()}`;
+    },
     search: {
       byType: (tipo: string) => `/financeiro/buscar/tipo/${tipo}`,
       byMember: (membroId: number) => `/financeiro/buscar/membro/${membroId}`,
