@@ -14,7 +14,13 @@ import { Badge } from '../../../shared/ui/Badge/Badge';
 import { ConfirmModal } from '../../../shared/ui/ConfirmModal/ConfirmModal';
 import { useUIStore } from '../../../app/stores/uiStore';
 import { useAuthStore } from '../../../app/stores/authStore';
-import { TIPO_FINANCEIRO_LABELS, TIPO_FINANCEIRO_COLORS, TIPOS_FINANCEIRO, TIPO_PERIODO_RELATORIO_LABELS } from '../../../shared/lib/constants';
+import {
+  CATEGORIA_FINANCEIRA_LABELS,
+  TIPO_MOVIMENTACAO_FINANCEIRA_COLORS,
+  TIPO_MOVIMENTACAO_FINANCEIRA_LABELS,
+  TIPOS_MOVIMENTACAO_FINANCEIRA,
+  TIPO_PERIODO_RELATORIO_LABELS,
+} from '../../../shared/lib/constants';
 import { formatCurrency } from '../../../shared/lib/formatters';
 import { Eye, Edit, Trash2, DollarSign, ChevronLeft, ChevronRight, Search, X, ChevronDown, FileDown } from 'lucide-react';
 import { Modal } from '../../../shared/ui/Modal/Modal';
@@ -33,7 +39,7 @@ export const ListaFinanceiro = () => {
   const [tipoFilter, setTipoFilter] = useState<string>('');
   const [membroFilter, setMembroFilter] = useState<string>('');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [registroToDelete, setRegistroToDelete] = useState<{ id: number; tipo: string } | null>(null);
+  const [registroToDelete, setRegistroToDelete] = useState<{ id: number; summary: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -64,7 +70,9 @@ export const ListaFinanceiro = () => {
       }
 
       if (tipoFilter && membroFilter) {
-        filtered = Array.isArray(filtered) ? filtered.filter(r => r.tipo === tipoFilter) : [];
+        filtered = Array.isArray(filtered)
+          ? filtered.filter((r) => r.tipo === tipoFilter)
+          : [];
       }
 
       setRegistros(Array.isArray(filtered) ? filtered : []);
@@ -99,8 +107,8 @@ export const ListaFinanceiro = () => {
     setCurrentPage(1);
   }, [tipoFilter, membroFilter]);
 
-  const handleDeleteClick = (id: number, tipo: string) => {
-    setRegistroToDelete({ id, tipo });
+  const handleDeleteClick = (id: number, summary: string) => {
+    setRegistroToDelete({ id, summary });
     setDeleteModalOpen(true);
   };
 
@@ -152,13 +160,30 @@ export const ListaFinanceiro = () => {
     { field: 'id', label: 'ID', sortable: true },
     {
       field: 'tipo',
-      label: 'Tipo',
+      label: 'Movimentação',
       sortable: true,
       render: (value) => (
-        <Badge color={TIPO_FINANCEIRO_COLORS[value as string] || 'default'}>
-          {TIPO_FINANCEIRO_LABELS[value as string] || value}
+        <Badge color={TIPO_MOVIMENTACAO_FINANCEIRA_COLORS[value as string] || 'default'}>
+          {TIPO_MOVIMENTACAO_FINANCEIRA_LABELS[value as string] || value}
         </Badge>
       ),
+    },
+    {
+      field: 'codigoFinanceiro',
+      label: 'Código / Descrição',
+      sortable: true,
+      render: (_, row) => (
+        <span>
+          {row.codigoFinanceiro}
+          {row.descricaoCodigoFinanceiro ? ` · ${row.descricaoCodigoFinanceiro}` : ''}
+        </span>
+      ),
+    },
+    {
+      field: 'categoria',
+      label: 'Categoria',
+      sortable: true,
+      render: (value) => CATEGORIA_FINANCEIRA_LABELS[value as string] || value,
     },
     {
       field: 'entrada',
@@ -207,10 +232,10 @@ export const ListaFinanceiro = () => {
   ];
 
   const tipoOptions = [
-    { value: '', label: 'Todos os tipos' },
-    ...Object.entries(TIPOS_FINANCEIRO).map(([key]) => ({
+    { value: '', label: 'Todas as movimentações' },
+    ...Object.entries(TIPOS_MOVIMENTACAO_FINANCEIRA).map(([key]) => ({
       value: key,
-      label: TIPO_FINANCEIRO_LABELS[key],
+      label: TIPO_MOVIMENTACAO_FINANCEIRA_LABELS[key] ?? key,
     })),
   ];
 
@@ -357,7 +382,7 @@ export const ListaFinanceiro = () => {
         <div className="lista-financeiro-filters">
           <div className="lista-financeiro-filters-grid">
             <Select
-              label="Filtrar por Tipo"
+              label="Filtrar por movimentação"
               options={tipoOptions}
               value={tipoFilter}
               onChange={(e) => setTipoFilter(e.target.value)}
@@ -462,7 +487,12 @@ export const ListaFinanceiro = () => {
                     <Button
                       variant="ghost"
                       size="small"
-                      onClick={() => handleDeleteClick(row.id, row.tipo)}
+                      onClick={() =>
+                        handleDeleteClick(
+                          row.id,
+                          `${row.codigoFinanceiro} · ${row.descricaoCodigoFinanceiro ?? row.categoria}`
+                        )
+                      }
                       icon={<Trash2 className="w-4 h-4" />}
                       aria-label="Excluir registro"
                     >
@@ -563,7 +593,7 @@ export const ListaFinanceiro = () => {
         }}
         onConfirm={handleDeleteConfirm}
         title="Excluir Registro Financeiro"
-        message={`Tem certeza que deseja excluir este registro financeiro (${TIPO_FINANCEIRO_LABELS[registroToDelete?.tipo as keyof typeof TIPO_FINANCEIRO_LABELS] || registroToDelete?.tipo})? Esta ação não pode ser desfeita.`}
+        message={`Tem certeza que deseja excluir este registro financeiro (${registroToDelete?.summary ?? ''})? Esta ação não pode ser desfeita.`}
         confirmText="Excluir"
         cancelText="Cancelar"
         variant="danger"

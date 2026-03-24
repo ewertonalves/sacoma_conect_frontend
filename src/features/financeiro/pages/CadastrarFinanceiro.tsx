@@ -1,72 +1,41 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { financeiroService } from '../services/financeiroService';
 import { membroService } from '../../membros/services/membroService';
-import type { Membro, TipoFinanceiro } from '../../../shared/types';
+import type { CodigoFinanceiro, Membro } from '../../../shared/types';
 import { Input } from '../../../shared/ui/Input/Input';
 import { Select } from '../../../shared/ui/Select/Select';
 import { Textarea } from '../../../shared/ui/Textarea/Textarea';
 import { Button } from '../../../shared/ui/Button/Button';
 import { Card } from '../../../shared/ui/Card/Card';
 import { useUIStore } from '../../../app/stores/uiStore';
-import { TIPO_FINANCEIRO_LABELS, TIPOS_FINANCEIRO } from '../../../shared/lib/constants';
+import { TIPO_MOVIMENTACAO_FINANCEIRA_LABELS } from '../../../shared/lib/constants';
 import { parseCurrency, formatCurrencyInput } from '../../../shared/lib/formatters';
+import { buildFinanceiroFormSchema } from '../utils/financeiroFormSchema';
 import { Search, X, ChevronDown } from 'lucide-react';
 import './css/CadastrarFinanceiro.css';
 
-const financeiroSchema = z
-  .object({
-    tipo: z.enum(['DIZIMO', 'DESPESAS', 'REFORMAS', 'OFERTAS']),
-    entrada: z.string().optional(),
-    saida: z.string().optional(),
-    membroId: z.string().optional(),
-    observacao: z.string().max(255, 'Observação deve ter no máximo 255 caracteres').optional(),
-  })
-  .refine(
-    (data) => {
-      const entrada = data.entrada ? parseCurrency(data.entrada) : 0;
-      const saida = data.saida ? parseCurrency(data.saida) : 0;
-      return entrada > 0 || saida > 0;
-    },
-    {
-      message: 'É necessário informar pelo menos um valor de entrada ou saída',
-      path: ['entrada'],
-    }
-  )
-  .refine(
-    (data) => {
-      const entrada = data.entrada ? parseCurrency(data.entrada) : 0;
-      return entrada >= 0;
-    },
-    {
-      message: 'Entrada deve ser maior ou igual a zero',
-      path: ['entrada'],
-    }
-  )
-  .refine(
-    (data) => {
-      const saida = data.saida ? parseCurrency(data.saida) : 0;
-      return saida >= 0;
-    },
-    {
-      message: 'Saída deve ser maior ou igual a zero',
-      path: ['saida'],
-    }
-  );
-
-type FinanceiroFormData = z.infer<typeof financeiroSchema>;
+type FinanceiroFormData = {
+  codigoFinanceiro: string;
+  entrada?: string;
+  saida?: string;
+  membroId?: string;
+  observacao?: string;
+};
 
 export const CadastrarFinanceiro = () => {
   const navigate = useNavigate();
   const { showNotification } = useUIStore();
   const [loading, setLoading] = useState(false);
+  const [codigos, setCodigos] = useState<CodigoFinanceiro[]>([]);
   const [membros, setMembros] = useState<Membro[]>([]);
   const [membroSearchTerm, setMembroSearchTerm] = useState('');
   const [membroSelectOpen, setMembroSelectOpen] = useState(false);
   const membroSelectRef = useRef<HTMLDivElement>(null);
+
+  const schema = useMemo(() => buildFinanceiroFormSchema(codigos), [codigos]);
 
   const {
     register,
@@ -74,26 +43,37 @@ export const CadastrarFinanceiro = () => {
     control,
     watch,
     setValue,
-    formState: { errors }
+    formState: { errors },
   } = useForm<FinanceiroFormData>({
-    resolver: zodResolver(financeiroSchema),
+    resolver: zodResolver(schema),
+    defaultValues: {
+      codigoFinanceiro: '',
+      entrada: '',
+      saida: '',
+      membroId: '',
+      observacao: '',
+    },
   });
 
   const membroId = watch('membroId');
 
   useEffect(() => {
-    const loadMembros = async () => {
+    const load = async () => {
       try {
-        const data = await membroService.list();
-        setMembros(data);
-      } catch (error) {
-        // Silently fail
+        const [codigosData, membrosData] = await Promise.all([
+          financeiroService.listCodigos(),
+          membroService.list(),
+        ]);
+        setCodigos(Array.isArray(codigosData) ? codigosData : []);
+        setMembros(Array.isArray(membrosData) ? membrosData : []);
+      } catch {
+        setCodigos([]);
+        setMembros([]);
       }
     };
-    loadMembros();
+    load();
   }, []);
 
-  // Fecha o dropdown ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (membroSelectRef.current && !membroSelectRef.current.contains(event.target as Node)) {
@@ -113,10 +93,12 @@ export const CadastrarFinanceiro = () => {
   const onSubmit = async (data: FinanceiroFormData) => {
     try {
       setLoading(true);
+      const entradaVal = data.entrada ? parseCurrency(data.entrada) : 0;
+      const saidaVal = data.saida ? parseCurrency(data.saida) : 0;
       await financeiroService.create({
-        tipo: data.tipo as TipoFinanceiro,
-        entrada: data.entrada ? parseCurrency(data.entrada) : 0,
-        saida: data.saida ? parseCurrency(data.saida) : 0,
+        codigoFinanceiro: Number(data.codigoFinanceiro),
+        entrada: entradaVal,
+        saida: saidaVal,
         membroId: data.membroId ? Number(data.membroId) : undefined,
         observacao: data.observacao || undefined,
       });
@@ -125,20 +107,23 @@ export const CadastrarFinanceiro = () => {
         message: 'Registro financeiro cadastrado com sucesso',
       });
       navigate('/financeiro');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Erro ao cadastrar registro financeiro';
       showNotification({
         type: 'error',
-        message: error.message || 'Erro ao cadastrar registro financeiro',
+        message,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const tipoOptions = Object.entries(TIPOS_FINANCEIRO).map(([key]) => ({
-    value: key,
-    label: TIPO_FINANCEIRO_LABELS[key],
-  }));
+  const codigoOptions = [...codigos]
+    .sort((a, b) => a.codigo - b.codigo)
+    .map((c) => ({
+      value: String(c.codigo),
+      label: `${c.codigo} — ${c.descricao} (${TIPO_MOVIMENTACAO_FINANCEIRA_LABELS[c.tipo] ?? c.tipo})`,
+    }));
 
   const membroOptions = [
     { value: '', label: 'Selecione um membro (opcional)' },
@@ -148,7 +133,6 @@ export const CadastrarFinanceiro = () => {
     })),
   ];
 
-  // Filtra membros baseado no termo de busca
   const filteredMembroOptions = membroSearchTerm
     ? membroOptions.filter((option) =>
         option.label.toLowerCase().includes(membroSearchTerm.toLowerCase())
@@ -175,11 +159,12 @@ export const CadastrarFinanceiro = () => {
       <Card>
         <form onSubmit={handleSubmit(onSubmit)} className="cadastrar-financeiro-form">
           <Select
-            label="Tipo"
-            options={tipoOptions}
-            error={errors.tipo?.message}
+            label="Código financeiro"
+            options={[{ value: '', label: 'Selecione o código' }, ...codigoOptions]}
+            error={errors.codigoFinanceiro?.message}
             required
-            {...register('tipo')}
+            disabled={codigos.length === 0}
+            {...register('codigoFinanceiro')}
           />
 
           <div className="cadastrar-financeiro-values-grid">
@@ -191,7 +176,7 @@ export const CadastrarFinanceiro = () => {
                   label="Valor de Entrada"
                   type="text"
                   placeholder="R$ 0,00"
-                  helperText="Deixe em branco se não houver entrada"
+                  helperText="Receitas (códigos de entrada)"
                   error={errors.entrada?.message}
                   value={formatCurrencyInput(field.value || '')}
                   onChange={(e) => {
@@ -213,7 +198,7 @@ export const CadastrarFinanceiro = () => {
                   label="Valor de Saída"
                   type="text"
                   placeholder="R$ 0,00"
-                  helperText="Deixe em branco se não houver saída"
+                  helperText="Despesas (códigos de saída)"
                   error={errors.saida?.message}
                   value={formatCurrencyInput(field.value || '')}
                   onChange={(e) => {
@@ -321,4 +306,3 @@ export const CadastrarFinanceiro = () => {
     </div>
   );
 };
-

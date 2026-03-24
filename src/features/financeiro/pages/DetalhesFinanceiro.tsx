@@ -7,7 +7,11 @@ import { Button } from '../../../shared/ui/Button/Button';
 import { Loading } from '../../../shared/ui/Loading/Loading';
 import { Badge } from '../../../shared/ui/Badge/Badge';
 import { useUIStore } from '../../../app/stores/uiStore';
-import { TIPO_FINANCEIRO_LABELS, TIPO_FINANCEIRO_COLORS } from '../../../shared/lib/constants';
+import {
+  CATEGORIA_FINANCEIRA_LABELS,
+  TIPO_MOVIMENTACAO_FINANCEIRA_COLORS,
+  TIPO_MOVIMENTACAO_FINANCEIRA_LABELS,
+} from '../../../shared/lib/constants';
 import { formatCurrency, formatDateTime } from '../../../shared/lib/formatters';
 import { Edit, ArrowLeft } from 'lucide-react';
 import './css/DetalhesFinanceiro.css';
@@ -27,10 +31,11 @@ export const DetalhesFinanceiro = () => {
         setLoading(true);
         const data = await financeiroService.get(Number(id));
         setRegistro(data);
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Erro ao carregar registro financeiro';
         showNotification({
           type: 'error',
-          message: error.message || 'Erro ao carregar registro financeiro',
+          message,
         });
         navigate('/financeiro');
       } finally {
@@ -50,6 +55,9 @@ export const DetalhesFinanceiro = () => {
   }
 
   const saldo = (registro.entrada || 0) - (registro.saida || 0);
+  const classificacaoLabel = registro.descricaoCodigoFinanceiro
+    ? `${registro.codigoFinanceiro} — ${registro.descricaoCodigoFinanceiro}`
+    : String(registro.codigoFinanceiro);
 
   return (
     <div className="detalhes-financeiro-container">
@@ -78,11 +86,21 @@ export const DetalhesFinanceiro = () => {
       <Card title="Informações do Registro">
         <div className="detalhes-financeiro-info-grid">
           <div className="detalhes-financeiro-info-item">
-            <p className="detalhes-financeiro-info-label">Tipo</p>
+            <p className="detalhes-financeiro-info-label">Movimentação</p>
             <p className="detalhes-financeiro-info-value">
-              <Badge color={TIPO_FINANCEIRO_COLORS[registro.tipo] || 'default'}>
-                {TIPO_FINANCEIRO_LABELS[registro.tipo] || registro.tipo}
+              <Badge color={TIPO_MOVIMENTACAO_FINANCEIRA_COLORS[registro.tipo] || 'default'}>
+                {TIPO_MOVIMENTACAO_FINANCEIRA_LABELS[registro.tipo] || registro.tipo}
               </Badge>
+            </p>
+          </div>
+          <div className="detalhes-financeiro-info-item">
+            <p className="detalhes-financeiro-info-label">Código financeiro</p>
+            <p className="detalhes-financeiro-info-value">{classificacaoLabel}</p>
+          </div>
+          <div className="detalhes-financeiro-info-item">
+            <p className="detalhes-financeiro-info-label">Categoria</p>
+            <p className="detalhes-financeiro-info-value">
+              {CATEGORIA_FINANCEIRA_LABELS[registro.categoria] || registro.categoria}
             </p>
           </div>
           <div className="detalhes-financeiro-info-item">
@@ -134,4 +152,3 @@ export const DetalhesFinanceiro = () => {
     </div>
   );
 };
-

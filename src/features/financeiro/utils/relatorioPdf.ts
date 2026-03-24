@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { RelatorioFinanceiroResponse } from '../../../shared/types';
 import { formatCurrency, formatDate, formatDateTime } from '../../../shared/lib/formatters';
-import { TIPO_FINANCEIRO_LABELS } from '../../../shared/lib/constants';
+import { CATEGORIA_FINANCEIRA_LABELS } from '../../../shared/lib/constants';
 
 const TITULO = 'Relatório Financeiro';
 const FONTE_TITULO = 18;
@@ -58,31 +58,40 @@ export function downloadRelatorioPdf(relatorio: RelatorioFinanceiroResponse): vo
 
   // Tabela de itens
   const itens = relatorio.itens || [];
-  const tableData = itens.map((item) => [
-    String(item.id),
-    TIPO_FINANCEIRO_LABELS[item.tipo] || item.tipo,
-    formatCurrencyPdf(item.entrada ?? 0),
-    formatCurrencyPdf(item.saida ?? 0),
-    getMembroNome(item),
-    item.observacao?.slice(0, 30) ?? '-',
-    formatDateTime(item.dataRegistro),
-  ]);
+  const tableData = itens.map((item) => {
+    const codigoDesc =
+      item.descricaoCodigoFinanceiro != null && item.descricaoCodigoFinanceiro !== ''
+        ? `${item.codigoFinanceiro} ${item.descricaoCodigoFinanceiro}`
+        : String(item.codigoFinanceiro ?? '');
+    const categoria = CATEGORIA_FINANCEIRA_LABELS[item.categoria] ?? item.categoria ?? '';
+    return [
+      String(item.id),
+      codigoDesc,
+      categoria,
+      formatCurrencyPdf(item.entrada ?? 0),
+      formatCurrencyPdf(item.saida ?? 0),
+      getMembroNome(item),
+      item.observacao?.slice(0, 24) ?? '-',
+      formatDateTime(item.dataRegistro),
+    ];
+  });
 
   autoTable(doc, {
     startY: y,
-    head: [['ID', 'Tipo', 'Entrada', 'Saída', 'Membro', 'Obs.', 'Data']],
+    head: [['ID', 'Código', 'Categoria', 'Entrada', 'Saída', 'Membro', 'Obs.', 'Data']],
     body: tableData,
     theme: 'grid',
     headStyles: { fillColor: [66, 139, 202], textColor: 255, fontStyle: 'bold' },
     styles: { fontSize: 8 },
     columnStyles: {
-      0: { cellWidth: 12 },
-      1: { cellWidth: 28 },
-      2: { cellWidth: 28 },
-      3: { cellWidth: 28 },
-      4: { cellWidth: 35 },
-      5: { cellWidth: 30 },
-      6: { cellWidth: 35 },
+      0: { cellWidth: 10 },
+      1: { cellWidth: 26 },
+      2: { cellWidth: 22 },
+      3: { cellWidth: 22 },
+      4: { cellWidth: 22 },
+      5: { cellWidth: 28 },
+      6: { cellWidth: 22 },
+      7: { cellWidth: 30 },
     },
     margin: { left: MARGEM },
     tableWidth: LARGURA_PAGINA - 2 * MARGEM,

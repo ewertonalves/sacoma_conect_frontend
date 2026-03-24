@@ -3,25 +3,41 @@ export const ROLES = {
   USER: 'USER',
 } as const;
 
-export const TIPOS_FINANCEIRO = {
-  DIZIMO: 'DIZIMO',
-  DESPESAS: 'DESPESAS',
-  REFORMAS: 'REFORMAS',
-  OFERTAS: 'OFERTAS',
+export const TIPOS_MOVIMENTACAO_FINANCEIRA = {
+  ENTRADA: 'ENTRADA',
+  SAIDA: 'SAIDA',
 } as const;
 
-export const TIPO_FINANCEIRO_LABELS: Record<string, string> = {
-  DIZIMO: 'Dízimo',
-  DESPESAS: 'Despesas',
-  REFORMAS: 'Reformas',
-  OFERTAS: 'Ofertas',
+export const TIPO_MOVIMENTACAO_FINANCEIRA_LABELS: Record<string, string> = {
+  ENTRADA: 'Entrada',
+  SAIDA: 'Saída',
 };
 
-export const TIPO_FINANCEIRO_COLORS: Record<string, 'success' | 'error' | 'warning' | 'info'> = {
-  DIZIMO: 'success',
-  DESPESAS: 'error',
-  REFORMAS: 'warning',
-  OFERTAS: 'info',
+export const TIPO_MOVIMENTACAO_FINANCEIRA_COLORS: Record<string, 'success' | 'error' | 'warning' | 'info'> = {
+  ENTRADA: 'success',
+  SAIDA: 'error',
+};
+
+/** Rótulos amigáveis para CategoriaFinanceira (aba Código Financeiro). */
+export const CATEGORIA_FINANCEIRA_LABELS: Record<string, string> = {
+  DIZIMO: 'Dízimo',
+  OFERTA: 'Oferta',
+  OFERTA_MISSIONARIA: 'Oferta missionária',
+  OFERTA_ESPECIAL: 'Oferta especial',
+  DOACAO: 'Doação',
+  CONTRIBUICAO: 'Contribuição',
+  OUTRAS_ENTRADAS: 'Outras entradas',
+  AGUA: 'Água',
+  LUZ: 'Luz',
+  ALUGUEL: 'Aluguel',
+  MANUTENCAO: 'Manutenção',
+  LIMPEZA: 'Limpeza',
+  MATERIAL: 'Material',
+  AJUDA_SOCIAL: 'Ajuda social',
+  TRANSPORTE: 'Transporte',
+  EVENTOS: 'Eventos',
+  OFERTA_SEDE: 'Oferta para sede',
+  OUTRAS_SAIDAS: 'Outras saídas',
 };
 
 export const ROLE_LABELS: Record<string, string> = {
@@ -43,4 +59,3 @@ export const TIPO_PERIODO_RELATORIO_LABELS: Record<string, string> = {
   MENSAL: 'Mensal',
   PERSONALIZADO: 'Período',
 };
-

@@ -24,6 +24,7 @@ export const endpoints = {
     },
   },
   financeiro: {
+    codigos: '/financeiro/codigos',
     list: '/financeiro',
     get: (id: number) => `/financeiro/${id}`,
     create: '/financeiro',

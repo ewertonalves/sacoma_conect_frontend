@@ -11,7 +11,11 @@ import { membroService } from '../../membros/services/membroService';
 import { usuarioService } from '../../usuarios/services/usuarioService';
 import type { Financeiro } from '../../../shared/types';
 import { formatCurrency } from '../../../shared/lib/formatters';
-import { TIPO_FINANCEIRO_LABELS, TIPO_FINANCEIRO_COLORS } from '../../../shared/lib/constants';
+import {
+  CATEGORIA_FINANCEIRA_LABELS,
+  TIPO_MOVIMENTACAO_FINANCEIRA_COLORS,
+  TIPO_MOVIMENTACAO_FINANCEIRA_LABELS,
+} from '../../../shared/lib/constants';
 import { Users, UserCircle, TrendingUp, TrendingDown, DollarSign, Eye, ArrowRight } from 'lucide-react';
 import './css/Dashboard.css';
 
@@ -167,12 +171,17 @@ export const Dashboard = () => {
   const columns: TableColumn<Financeiro>[] = [
     {
       field: 'tipo',
-      label: 'Tipo',
+      label: 'Mov.',
       render: (value) => (
-        <Badge color={TIPO_FINANCEIRO_COLORS[value as string] || 'default'}>
-          {TIPO_FINANCEIRO_LABELS[value as string] || value}
+        <Badge color={TIPO_MOVIMENTACAO_FINANCEIRA_COLORS[value as string] || 'default'}>
+          {TIPO_MOVIMENTACAO_FINANCEIRA_LABELS[value as string] || value}
         </Badge>
       ),
+    },
+    {
+      field: 'categoria',
+      label: 'Categoria',
+      render: (value) => CATEGORIA_FINANCEIRA_LABELS[value as string] || value,
     },
     {
       field: 'entrada',

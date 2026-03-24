@@ -29,7 +29,34 @@ export interface Membro {
   endereco?: Endereco | null;
 }
 
-export type TipoFinanceiro = 'DIZIMO' | 'DESPESAS' | 'REFORMAS' | 'OFERTAS';
+export type TipoMovimentacaoFinanceira = 'ENTRADA' | 'SAIDA';
+
+export type CategoriaFinanceira =
+  | 'DIZIMO'
+  | 'OFERTA'
+  | 'OFERTA_MISSIONARIA'
+  | 'OFERTA_ESPECIAL'
+  | 'DOACAO'
+  | 'CONTRIBUICAO'
+  | 'OUTRAS_ENTRADAS'
+  | 'AGUA'
+  | 'LUZ'
+  | 'ALUGUEL'
+  | 'MANUTENCAO'
+  | 'LIMPEZA'
+  | 'MATERIAL'
+  | 'AJUDA_SOCIAL'
+  | 'TRANSPORTE'
+  | 'EVENTOS'
+  | 'OFERTA_SEDE'
+  | 'OUTRAS_SAIDAS';
+
+export interface CodigoFinanceiro {
+  codigo: number;
+  descricao: string;
+  tipo: TipoMovimentacaoFinanceira;
+  categoria: CategoriaFinanceira;
+}
 
 export type TipoPeriodoRelatorio = 'SEMANAL' | 'MENSAL' | 'PERSONALIZADO';
 
@@ -41,7 +68,10 @@ export interface MembroFinanceiroResponse {
 
 export interface Financeiro {
   id: number;
-  tipo: TipoFinanceiro;
+  codigoFinanceiro: number;
+  descricaoCodigoFinanceiro?: string;
+  tipo: TipoMovimentacaoFinanceira;
+  categoria: CategoriaFinanceira;
   entrada: number;
   saida: number;
   saldo?: number;

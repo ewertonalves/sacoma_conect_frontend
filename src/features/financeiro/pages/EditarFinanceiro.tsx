@@ -1,11 +1,10 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useNavigate, useParams } from 'react-router-dom';
 import { financeiroService } from '../services/financeiroService';
 import { membroService } from '../../membros/services/membroService';
-import type { Membro, TipoFinanceiro } from '../../../shared/types';
+import type { CodigoFinanceiro, Membro } from '../../../shared/types';
 import { Input } from '../../../shared/ui/Input/Input';
 import { Select } from '../../../shared/ui/Select/Select';
 import { Textarea } from '../../../shared/ui/Textarea/Textarea';
@@ -13,32 +12,19 @@ import { Button } from '../../../shared/ui/Button/Button';
 import { Card } from '../../../shared/ui/Card/Card';
 import { Loading } from '../../../shared/ui/Loading/Loading';
 import { useUIStore } from '../../../app/stores/uiStore';
-import { TIPO_FINANCEIRO_LABELS, TIPOS_FINANCEIRO } from '../../../shared/lib/constants';
+import { TIPO_MOVIMENTACAO_FINANCEIRA_LABELS } from '../../../shared/lib/constants';
 import { parseCurrency, formatCurrencyInput } from '../../../shared/lib/formatters';
+import { buildFinanceiroFormSchema } from '../utils/financeiroFormSchema';
 import { Search, X, ChevronDown } from 'lucide-react';
 import './css/EditarFinanceiro.css';
 
-const financeiroSchema = z
-  .object({
-    tipo: z.enum(['DIZIMO', 'DESPESAS', 'REFORMAS', 'OFERTAS']),
-    entrada: z.string().optional(),
-    saida: z.string().optional(),
-    membroId: z.string().optional(),
-    observacao: z.string().max(255, 'Observação deve ter no máximo 255 caracteres').optional(),
-  })
-  .refine(
-    (data) => {
-      const entrada = data.entrada ? parseCurrency(data.entrada) : 0;
-      const saida = data.saida ? parseCurrency(data.saida) : 0;
-      return entrada > 0 || saida > 0;
-    },
-    {
-      message: 'É necessário informar pelo menos um valor de entrada ou saída',
-      path: ['entrada'],
-    }
-  );
-
-type FinanceiroFormData = z.infer<typeof financeiroSchema>;
+type FinanceiroFormData = {
+  codigoFinanceiro: string;
+  entrada?: string;
+  saida?: string;
+  membroId?: string;
+  observacao?: string;
+};
 
 export const EditarFinanceiro = () => {
   const { id } = useParams<{ id: string }>();
@@ -46,10 +32,13 @@ export const EditarFinanceiro = () => {
   const { showNotification } = useUIStore();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [codigos, setCodigos] = useState<CodigoFinanceiro[]>([]);
   const [membros, setMembros] = useState<Membro[]>([]);
   const [membroSearchTerm, setMembroSearchTerm] = useState('');
   const [membroSelectOpen, setMembroSelectOpen] = useState(false);
   const membroSelectRef = useRef<HTMLDivElement>(null);
+
+  const schema = useMemo(() => buildFinanceiroFormSchema(codigos), [codigos]);
 
   const {
     register,
@@ -60,7 +49,14 @@ export const EditarFinanceiro = () => {
     formState: { errors },
     reset,
   } = useForm<FinanceiroFormData>({
-    resolver: zodResolver(financeiroSchema),
+    resolver: zodResolver(schema),
+    defaultValues: {
+      codigoFinanceiro: '',
+      entrada: '',
+      saida: '',
+      membroId: '',
+      observacao: '',
+    },
   });
 
   const membroId = watch('membroId');
@@ -71,25 +67,30 @@ export const EditarFinanceiro = () => {
 
       try {
         setLoading(true);
-        const [registro, membrosData] = await Promise.all([
+        const [registro, membrosData, codigosData] = await Promise.all([
           financeiroService.get(Number(id)),
           membroService.list(),
+          financeiroService.listCodigos(),
         ]);
 
-        setMembros(membrosData);
+        setMembros(Array.isArray(membrosData) ? membrosData : []);
+        setCodigos(Array.isArray(codigosData) ? codigosData : []);
+
         const entradaValue = registro.entrada ? String(Math.round(registro.entrada * 100)) : '';
         const saidaValue = registro.saida ? String(Math.round(registro.saida * 100)) : '';
+        const mid = registro.membro?.id;
         reset({
-          tipo: registro.tipo,
+          codigoFinanceiro: String(registro.codigoFinanceiro),
           entrada: entradaValue,
           saida: saidaValue,
-          membroId: registro.membroId ? String(registro.membroId) : '',
+          membroId: mid != null ? String(mid) : '',
           observacao: registro.observacao || '',
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Erro ao carregar registro financeiro';
         showNotification({
           type: 'error',
-          message: error.message || 'Erro ao carregar registro financeiro',
+          message,
         });
         navigate('/financeiro');
       } finally {
@@ -105,10 +106,12 @@ export const EditarFinanceiro = () => {
 
     try {
       setSaving(true);
+      const entradaVal = data.entrada ? parseCurrency(data.entrada) : 0;
+      const saidaVal = data.saida ? parseCurrency(data.saida) : 0;
       await financeiroService.update(Number(id), {
-        tipo: data.tipo as TipoFinanceiro,
-        entrada: data.entrada ? parseCurrency(data.entrada) : 0,
-        saida: data.saida ? parseCurrency(data.saida) : 0,
+        codigoFinanceiro: Number(data.codigoFinanceiro),
+        entrada: entradaVal,
+        saida: saidaVal,
         membroId: data.membroId ? Number(data.membroId) : undefined,
         observacao: data.observacao || undefined,
       });
@@ -117,10 +120,11 @@ export const EditarFinanceiro = () => {
         message: 'Registro financeiro atualizado com sucesso',
       });
       navigate('/financeiro');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Erro ao atualizar registro financeiro';
       showNotification({
         type: 'error',
-        message: error.message || 'Erro ao atualizar registro financeiro',
+        message,
       });
     } finally {
       setSaving(false);
@@ -131,10 +135,12 @@ export const EditarFinanceiro = () => {
     return <Loading fullScreen />;
   }
 
-  const tipoOptions = Object.entries(TIPOS_FINANCEIRO).map(([key]) => ({
-    value: key,
-    label: TIPO_FINANCEIRO_LABELS[key],
-  }));
+  const codigoOptions = [...codigos]
+    .sort((a, b) => a.codigo - b.codigo)
+    .map((c) => ({
+      value: String(c.codigo),
+      label: `${c.codigo} — ${c.descricao} (${TIPO_MOVIMENTACAO_FINANCEIRA_LABELS[c.tipo] ?? c.tipo})`,
+    }));
 
   const membroOptions = [
     { value: '', label: 'Selecione um membro (opcional)' },
@@ -144,11 +150,10 @@ export const EditarFinanceiro = () => {
     })),
   ];
 
-  // Filtra membros baseado no termo de busca
   const filteredMembroOptions = membroSearchTerm
     ? membroOptions.filter((option) =>
-      option.label.toLowerCase().includes(membroSearchTerm.toLowerCase())
-    )
+        option.label.toLowerCase().includes(membroSearchTerm.toLowerCase())
+      )
     : membroOptions;
 
   const selectedMembroLabel = membroId
@@ -171,11 +176,12 @@ export const EditarFinanceiro = () => {
       <Card>
         <form onSubmit={handleSubmit(onSubmit)} className="editar-financeiro-form">
           <Select
-            label="Tipo"
-            options={tipoOptions}
-            error={errors.tipo?.message}
+            label="Código financeiro"
+            options={[{ value: '', label: 'Selecione o código' }, ...codigoOptions]}
+            error={errors.codigoFinanceiro?.message}
             required
-            {...register('tipo')}
+            disabled={codigos.length === 0}
+            {...register('codigoFinanceiro')}
           />
 
           <div className="editar-financeiro-values-grid">
@@ -187,7 +193,7 @@ export const EditarFinanceiro = () => {
                   label="Valor de Entrada"
                   type="text"
                   placeholder="R$ 0,00"
-                  helperText="Deixe em branco se não houver entrada"
+                  helperText="Receitas (códigos de entrada)"
                   error={errors.entrada?.message}
                   value={formatCurrencyInput(field.value || '')}
                   onChange={(e) => {
@@ -209,7 +215,7 @@ export const EditarFinanceiro = () => {
                   label="Valor de Saída"
                   type="text"
                   placeholder="R$ 0,00"
-                  helperText="Deixe em branco se não houver saída"
+                  helperText="Despesas (códigos de saída)"
                   error={errors.saida?.message}
                   value={formatCurrencyInput(field.value || '')}
                   onChange={(e) => {
@@ -317,4 +323,3 @@ export const EditarFinanceiro = () => {
     </div>
   );
 };
-

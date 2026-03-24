@@ -1,8 +1,24 @@
 import apiClient from '../../../shared/api/client';
 import { endpoints } from '../../../shared/api/endpoints';
-import type { Financeiro, RelatorioFinanceiroResponse, TipoPeriodoRelatorio } from '../../../shared/types';
+import type {
+  CodigoFinanceiro,
+  Financeiro,
+  RelatorioFinanceiroResponse,
+  TipoPeriodoRelatorio,
+} from '../../../shared/types';
 
 export const financeiroService = {
+  listCodigos: async (): Promise<CodigoFinanceiro[]> => {
+    try {
+      const response = await apiClient.get<{ data?: CodigoFinanceiro[] }>(endpoints.financeiro.codigos);
+      const raw = response.data?.data ?? (response.data as unknown as CodigoFinanceiro[]);
+      if (Array.isArray(raw)) return raw;
+      return [];
+    } catch {
+      return [];
+    }
+  },
+
   list: async (): Promise<Financeiro[]> => {
     try {
       const response = await apiClient.get<any>(endpoints.financeiro.list);
