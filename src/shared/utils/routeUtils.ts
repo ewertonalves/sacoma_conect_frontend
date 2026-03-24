@@ -15,6 +15,7 @@ const rotasPorPermissao: Record<string, string> = {
   'financeiro-novo': '/financeiro',
   'financeiro-editar': '/financeiro',
   'financeiro-detalhes': '/financeiro',
+  'financeiro-relatorio-pdf': '/financeiro',
   'assistencia-social': '/assistencia-social',
   'assistencia-social-novo': '/assistencia-social',
   'assistencia-social-editar': '/assistencia-social',

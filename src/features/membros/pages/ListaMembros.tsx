@@ -154,14 +154,27 @@ export const ListaMembros = () => {
   }, [searchTerm]);
 
   const columns: TableColumn<Membro>[] = [
-    { field: 'nome', label: 'Nome', sortable: true },
+    {
+      field: 'nome',
+      label: 'Nome',
+      sortable: true,
+      render: (value) => (value && String(value).trim() ? String(value) : '—'),
+    },
     {
       field: 'cpf',
       label: 'CPF',
-      render: (value) => formatCPF(value),
+      render: (value) => formatCPF(value as string | undefined) || '—',
     },
-    { field: 'ri', label: 'RI' },
-    { field: 'cargo', label: 'Cargo' },
+    {
+      field: 'ri',
+      label: 'RI',
+      render: (value) => (value && String(value).trim() ? String(value) : '—'),
+    },
+    {
+      field: 'cargo',
+      label: 'Cargo',
+      render: (value) => (value && String(value).trim() ? String(value) : '—'),
+    },
   ];
 
   return (
@@ -231,7 +244,7 @@ export const ListaMembros = () => {
                       <Button
                         variant="ghost"
                         size="small"
-                        onClick={() => handleDeleteClick(row.id, row.nome)}
+                        onClick={() => handleDeleteClick(row.id, row.nome?.trim() || `Membro #${row.id}`)}
                         icon={<Trash2 className="w-4 h-4" />}
                         aria-label="Excluir membro"
                       >

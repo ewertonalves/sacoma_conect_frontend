@@ -140,7 +140,7 @@ export const EditarFinanceiro = () => {
     { value: '', label: 'Selecione um membro (opcional)' },
     ...membros.map((m) => ({
       value: String(m.id),
-      label: m.nome,
+      label: m.nome?.trim() || `Membro #${m.id}`,
     })),
   ];
 

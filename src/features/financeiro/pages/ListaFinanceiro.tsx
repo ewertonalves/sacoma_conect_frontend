@@ -188,7 +188,7 @@ export const ListaFinanceiro = () => {
             to={`/membros/${membro.id}`}
             className="text-blue-600 hover:text-blue-700 underline"
           >
-            {membro.nome}
+            {membro.nome?.trim() || `Membro #${membro.id}`}
           </Link>
         );
       },
@@ -218,7 +218,7 @@ export const ListaFinanceiro = () => {
     { value: '', label: 'Todos os membros' },
     ...membros.map((m) => ({
       value: String(m.id),
-      label: m.nome,
+      label: m.nome?.trim() || `Membro #${m.id}`,
     })),
   ];
 
@@ -256,7 +256,13 @@ export const ListaFinanceiro = () => {
     setMembroSearchTerm('');
   };
 
+  const podeGerarRelatorioPdf = role === 'ADMIN' || hasPermissao('financeiro-relatorio-pdf');
+
   const handleGerarRelatorioPdf = async () => {
+    if (!podeGerarRelatorioPdf) {
+      showNotification({ type: 'error', message: 'Você não tem permissão para gerar o relatório em PDF.' });
+      return;
+    }
     if (!relatorioDataInicial.trim()) {
       showNotification({ type: 'error', message: 'Informe a data inicial.' });
       return;
@@ -304,13 +310,15 @@ export const ListaFinanceiro = () => {
           <p className="lista-financeiro-subtitle">Gerenciar registros financeiros</p>
         </div>
         <div className="lista-financeiro-header-actions">
-          <Button
-            variant="outline"
-            onClick={() => setRelatorioModalOpen(true)}
-            icon={<FileDown className="w-4 h-4" />}
-          >
-            Relatório PDF
-          </Button>
+          {podeGerarRelatorioPdf && (
+            <Button
+              variant="outline"
+              onClick={() => setRelatorioModalOpen(true)}
+              icon={<FileDown className="w-4 h-4" />}
+            >
+              Relatório PDF
+            </Button>
+          )}
           {(role === 'ADMIN' || hasPermissao('financeiro-novo')) && (
             <Button
               onClick={() => navigate('/financeiro/novo')}
@@ -562,57 +570,59 @@ export const ListaFinanceiro = () => {
         loading={deleting}
       />
 
-      <Modal
-        open={relatorioModalOpen}
-        onClose={() => !relatorioLoading && setRelatorioModalOpen(false)}
-        title="Gerar relatório em PDF"
-        size="medium"
-        closable={!relatorioLoading}
-        footer={
-          <div className="lista-financeiro-relatorio-modal-footer">
-            <Button variant="outline" onClick={() => setRelatorioModalOpen(false)} disabled={relatorioLoading}>
-              Cancelar
-            </Button>
-            <Button onClick={handleGerarRelatorioPdf} loading={relatorioLoading} disabled={relatorioLoading} icon={<FileDown className="w-4 h-4" />}>
-              Gerar e baixar PDF
-            </Button>
-          </div>
-        }
-      >
-        <div className="lista-financeiro-relatorio-modal-body">
-          <p className="lista-financeiro-relatorio-modal-desc">
-            Escolha o período e o tipo do relatório. Os dados serão buscados no servidor e o PDF montado no navegador.
-          </p>
-          <Select
-            label="Tipo de período"
-            options={relatorioPeriodoOptions}
-            value={relatorioTipoPeriodo}
-            onChange={(e) => setRelatorioTipoPeriodo(e.target.value as TipoPeriodoRelatorio)}
-          />
-          <div className="lista-financeiro-relatorio-dates">
-            <div className="lista-financeiro-relatorio-date-field">
-              <label className="lista-financeiro-relatorio-label">Data inicial</label>
-              <input
-                type="date"
-                value={relatorioDataInicial}
-                onChange={(e) => setRelatorioDataInicial(e.target.value)}
-                className="lista-financeiro-relatorio-input"
-              />
+      {podeGerarRelatorioPdf && (
+        <Modal
+          open={relatorioModalOpen}
+          onClose={() => !relatorioLoading && setRelatorioModalOpen(false)}
+          title="Gerar relatório em PDF"
+          size="medium"
+          closable={!relatorioLoading}
+          footer={
+            <div className="lista-financeiro-relatorio-modal-footer">
+              <Button variant="outline" onClick={() => setRelatorioModalOpen(false)} disabled={relatorioLoading}>
+                Cancelar
+              </Button>
+              <Button onClick={handleGerarRelatorioPdf} loading={relatorioLoading} disabled={relatorioLoading} icon={<FileDown className="w-4 h-4" />}>
+                Gerar e baixar PDF
+              </Button>
             </div>
-            {relatorioTipoPeriodo === 'PERSONALIZADO' && (
+          }
+        >
+          <div className="lista-financeiro-relatorio-modal-body">
+            <p className="lista-financeiro-relatorio-modal-desc">
+              Escolha o período e o tipo do relatório. Os dados serão buscados no servidor e o PDF montado no navegador.
+            </p>
+            <Select
+              label="Tipo de período"
+              options={relatorioPeriodoOptions}
+              value={relatorioTipoPeriodo}
+              onChange={(e) => setRelatorioTipoPeriodo(e.target.value as TipoPeriodoRelatorio)}
+            />
+            <div className="lista-financeiro-relatorio-dates">
               <div className="lista-financeiro-relatorio-date-field">
-                <label className="lista-financeiro-relatorio-label">Data final</label>
+                <label className="lista-financeiro-relatorio-label">Data inicial</label>
                 <input
                   type="date"
-                  value={relatorioDataFinal}
-                  onChange={(e) => setRelatorioDataFinal(e.target.value)}
+                  value={relatorioDataInicial}
+                  onChange={(e) => setRelatorioDataInicial(e.target.value)}
                   className="lista-financeiro-relatorio-input"
                 />
               </div>
-            )}
+              {relatorioTipoPeriodo === 'PERSONALIZADO' && (
+                <div className="lista-financeiro-relatorio-date-field">
+                  <label className="lista-financeiro-relatorio-label">Data final</label>
+                  <input
+                    type="date"
+                    value={relatorioDataFinal}
+                    onChange={(e) => setRelatorioDataFinal(e.target.value)}
+                    className="lista-financeiro-relatorio-input"
+                  />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </div>
   );
 };

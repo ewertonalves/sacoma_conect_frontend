@@ -9,7 +9,7 @@ import { Card } from '../../../shared/ui/Card/Card';
 import { useUIStore } from '../../../app/stores/uiStore';
 import { cepService } from '../../../shared/services/cepService';
 import { formatCPF, formatCEP } from '../../../shared/lib/formatters';
-import { membroSchema, type MembroFormData } from '../../../shared/lib/schemas/membroSchemas';
+import { membroCadastroSchema, type MembroCadastroFormData } from '../../../shared/lib/schemas/membroSchemas';
 import './css/CadastrarMembro.css';
 
 export const CadastrarMembro = () => {
@@ -26,8 +26,8 @@ export const CadastrarMembro = () => {
     setValue,
     watch,
     trigger,
-  } = useForm<MembroFormData>({
-    resolver: zodResolver(membroSchema),
+  } = useForm<MembroCadastroFormData>({
+    resolver: zodResolver(membroCadastroSchema),
     mode: 'onBlur',
     defaultValues: {
       nome: '',
@@ -103,7 +103,7 @@ export const CadastrarMembro = () => {
     }
   };
 
-  const onSubmit = async (data: MembroFormData) => {
+  const onSubmit = async (data: MembroCadastroFormData) => {
     try {
       setLoading(true);
       await membroService.create({
@@ -138,7 +138,7 @@ export const CadastrarMembro = () => {
     <div className="cadastrar-membro-container">
       <div className="cadastrar-membro-header">
         <h1 className="cadastrar-membro-title">Cadastrar Membro</h1>
-        <p className="cadastrar-membro-subtitle">Adicione um novo membro ao sistema</p>
+        <p className="cadastrar-membro-subtitle">Adicione um novo membro ao sistema. Todos os campos são opcionais.</p>
       </div>
 
       <Card>
@@ -147,10 +147,9 @@ export const CadastrarMembro = () => {
             <h3 className="cadastrar-membro-section-title">Dados Pessoais</h3>
             <div className="cadastrar-membro-grid">
               <Input
-                label="Nome completo"
+                label="Nome completo (opcional)"
                 type="text"
                 error={errors.nome?.message}
-                required
                 {...register('nome')}
               />
 
@@ -159,11 +158,10 @@ export const CadastrarMembro = () => {
                 control={control}
                 render={({ field }) => (
                   <Input
-                    label="CPF"
+                    label="CPF (opcional)"
                     type="text"
                     placeholder="000.000.000-00"
                     error={errors.cpf?.message}
-                    required
                     value={formatCPF(field.value || '')}
                     onChange={(e) => {
                       const formatted = formatCPF(e.target.value);
@@ -177,20 +175,18 @@ export const CadastrarMembro = () => {
               />
 
               <Input
-                label="RG"
+                label="RG (opcional)"
                 type="text"
                 placeholder="Digite o RG"
                 error={errors.rg?.message}
-                required
                 {...register('rg')}
               />
 
               <Input
-                label="RI"
+                label="RI (opcional)"
                 type="text"
                 placeholder="Digite o RI"
                 error={errors.ri?.message}
-                required
                 {...register('ri')}
               />
 
@@ -213,11 +209,10 @@ export const CadastrarMembro = () => {
                   control={control}
                   render={({ field }) => (
                     <Input
-                      label="CEP"
+                      label="CEP (opcional)"
                       type="text"
                       placeholder="00000-000"
                       error={errors.endereco?.cep?.message}
-                      required
                       disabled={loadingCep}
                       value={formatCEP(field.value || '')}
                       onChange={(e) => {
@@ -245,48 +240,39 @@ export const CadastrarMembro = () => {
               </div>
 
               <Input
-                label="Rua"
+                label="Rua (opcional)"
                 type="text"
-                disabled
                 error={errors.endereco?.rua?.message}
-                required
                 {...register('endereco.rua')}
               />
 
               <Input
-                label="Número"
+                label="Número (opcional)"
                 type="text"
                 error={errors.endereco?.numero?.message}
-                required
                 {...register('endereco.numero')}
               />
 
               <Input
-                label="Bairro"
+                label="Bairro (opcional)"
                 type="text"
-                disabled
                 error={errors.endereco?.bairro?.message}
-                required
                 {...register('endereco.bairro')}
               />
 
               <Input
-                label="Cidade"
+                label="Cidade (opcional)"
                 type="text"
-                disabled
                 error={errors.endereco?.cidade?.message}
-                required
                 {...register('endereco.cidade')}
               />
 
               <Input
-                label="Estado"
+                label="Estado (opcional)"
                 type="text"
                 maxLength={2}
                 placeholder="UF"
-                disabled
                 error={errors.endereco?.estado?.message}
-                required
                 {...register('endereco.estado', {
                   onChange: (e) => {
                     setValue('endereco.estado', e.target.value.toUpperCase());

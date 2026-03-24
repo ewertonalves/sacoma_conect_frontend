@@ -21,12 +21,12 @@ export interface Endereco {
 
 export interface Membro {
   id: number;
-  nome: string;
-  cpf: string;
-  rg: string;
-  ri: string;
-  cargo?: string;
-  endereco: Endereco;
+  nome?: string | null;
+  cpf?: string | null;
+  rg?: string | null;
+  ri?: string | null;
+  cargo?: string | null;
+  endereco?: Endereco | null;
 }
 
 export type TipoFinanceiro = 'DIZIMO' | 'DESPESAS' | 'REFORMAS' | 'OFERTAS';

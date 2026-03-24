@@ -20,6 +20,7 @@ const TELAS_DISPONIVEIS: TelaPermissao[] = [
   { id: 'financeiro-novo', nome: 'Cadastrar Financeiro', rota: '/financeiro/novo', descricao: 'Cadastrar novo registro financeiro' },
   { id: 'financeiro-editar', nome: 'Editar Financeiro', rota: '/financeiro/:id/editar', descricao: 'Editar registro financeiro' },
   { id: 'financeiro-detalhes', nome: 'Detalhes do Financeiro', rota: '/financeiro/:id', descricao: 'Ver detalhes do registro financeiro' },
+  { id: 'financeiro-relatorio-pdf', nome: 'Relatório PDF Financeiro', rota: '/financeiro', descricao: 'Gerar e baixar relatório financeiro em PDF' },
   { id: 'assistencia-social', nome: 'Assistência Social', rota: '/assistencia-social', descricao: 'Lista de registros de assistência social' },
   { id: 'assistencia-social-novo', nome: 'Cadastrar Assistência Social', rota: '/assistencia-social/novo', descricao: 'Cadastrar novo registro de assistência social' },
   { id: 'assistencia-social-editar', nome: 'Editar Assistência Social', rota: '/assistencia-social/:id/editar', descricao: 'Editar registro de assistência social' },

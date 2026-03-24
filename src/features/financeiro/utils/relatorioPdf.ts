@@ -22,7 +22,9 @@ function formatCurrencyPdf(value: number): string {
 function getMembroNome(item: RelatorioFinanceiroResponse['itens'][0]): string {
   const m = item.membro;
   if (!m) return '-';
-  return 'nome' in m ? m.nome : '-';
+  if (!('nome' in m)) return '-';
+  const n = m.nome;
+  return n != null && String(n).trim() !== '' ? String(n) : '-';
 }
 
 /**

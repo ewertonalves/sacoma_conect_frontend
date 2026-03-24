@@ -125,7 +125,7 @@ export const DetalhesFinanceiro = () => {
                 to={`/membros/${registro.membro.id}`}
                 className="detalhes-financeiro-membro-link"
               >
-                {registro.membro.nome}
+                {registro.membro.nome?.trim() || `Membro #${registro.membro.id}`}
               </Link>
             </p>
           </div>

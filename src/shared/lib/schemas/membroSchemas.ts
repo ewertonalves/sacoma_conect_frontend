@@ -69,3 +69,41 @@ export const membroSchema = z.object({
 });
 
 export type MembroFormData = z.infer<typeof membroSchema>;
+
+/** Cadastro novo membro: nenhum campo obrigatório; formatos validados quando preenchidos. */
+export const membroCadastroSchema = z.object({
+  nome: z.string().max(120, 'Nome deve ter no máximo 120 caracteres'),
+  cpf: z
+    .string()
+    .max(14, 'CPF deve ter no máximo 14 caracteres')
+    .refine(
+      (val) => {
+        const digits = (val || '').replace(/\D/g, '');
+        return digits.length === 0 || (digits.length === 11 && validateCPF(digits));
+      },
+      'CPF inválido'
+    ),
+  rg: z.string().max(20, 'RG deve ter no máximo 20 caracteres'),
+  ri: z.string().max(20, 'RI deve ter no máximo 20 caracteres'),
+  cargo: z.string().max(60, 'Cargo deve ter no máximo 60 caracteres'),
+  endereco: z.object({
+    rua: z.string().max(120, 'Rua deve ter no máximo 120 caracteres'),
+    numero: z.string().max(10, 'Número deve ter no máximo 10 caracteres'),
+    cep: z
+      .string()
+      .max(9, 'CEP deve ter no máximo 9 caracteres')
+      .refine(
+        (val) => {
+          const digits = (val || '').replace(/\D/g, '');
+          return digits.length === 0 || validateCEP(val);
+        },
+        'CEP inválido'
+      ),
+    bairro: z.string().max(80, 'Bairro deve ter no máximo 80 caracteres'),
+    cidade: z.string().max(100, 'Cidade deve ter no máximo 100 caracteres'),
+    estado: z.string().max(2, 'Estado deve ter no máximo 2 caracteres'),
+    complemento: z.string().max(120, 'Complemento deve ter no máximo 120 caracteres'),
+  }),
+});
+
+export type MembroCadastroFormData = z.infer<typeof membroCadastroSchema>;

@@ -10,6 +10,9 @@ import { formatCPF, formatCEP } from '../../../shared/lib/formatters';
 import { Edit, ArrowLeft } from 'lucide-react';
 import './css/DetalhesMembro.css';
 
+const exibirOuTraco = (valor: string | null | undefined): string =>
+  valor != null && String(valor).trim() !== '' ? String(valor) : '—';
+
 export const DetalhesMembro = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -79,19 +82,19 @@ export const DetalhesMembro = () => {
           </div>
           <div className="detalhes-membro-info-item">
             <p className="detalhes-membro-info-label">Nome</p>
-            <p className="detalhes-membro-info-value">{membro.nome}</p>
+            <p className="detalhes-membro-info-value">{exibirOuTraco(membro.nome)}</p>
           </div>
           <div className="detalhes-membro-info-item">
             <p className="detalhes-membro-info-label">CPF</p>
-            <p className="detalhes-membro-info-value">{formatCPF(membro.cpf)}</p>
+            <p className="detalhes-membro-info-value">{exibirOuTraco(formatCPF(membro.cpf) || undefined)}</p>
           </div>
           <div className="detalhes-membro-info-item">
             <p className="detalhes-membro-info-label">RG</p>
-            <p className="detalhes-membro-info-value">{membro.rg}</p>
+            <p className="detalhes-membro-info-value">{exibirOuTraco(membro.rg)}</p>
           </div>
           <div className="detalhes-membro-info-item">
             <p className="detalhes-membro-info-label">RI</p>
-            <p className="detalhes-membro-info-value">{membro.ri}</p>
+            <p className="detalhes-membro-info-value">{exibirOuTraco(membro.ri)}</p>
           </div>
           {membro.cargo && (
             <div className="detalhes-membro-info-item">
@@ -103,30 +106,42 @@ export const DetalhesMembro = () => {
       </Card>
 
       <Card title="Endereço">
-        <div className="detalhes-membro-info-grid">
-          <div className="detalhes-membro-info-item">
-            <p className="detalhes-membro-info-label">Rua</p>
-            <p className="detalhes-membro-info-value">{membro.endereco.rua}</p>
-          </div>
-          <div className="detalhes-membro-info-item">
-            <p className="detalhes-membro-info-label">Número</p>
-            <p className="detalhes-membro-info-value">{membro.endereco.numero}</p>
-          </div>
-          <div className="detalhes-membro-info-item">
-            <p className="detalhes-membro-info-label">CEP</p>
-            <p className="detalhes-membro-info-value">{formatCEP(membro.endereco.cep)}</p>
-          </div>
-          <div className="detalhes-membro-info-item">
-            <p className="detalhes-membro-info-label">Bairro</p>
-            <p className="detalhes-membro-info-value">{membro.endereco.bairro}</p>
-          </div>
-          {membro.endereco.complemento && (
+        {!membro.endereco ? (
+          <p className="detalhes-membro-info-value">Nenhum endereço cadastrado.</p>
+        ) : (
+          <div className="detalhes-membro-info-grid">
             <div className="detalhes-membro-info-item">
-              <p className="detalhes-membro-info-label">Complemento</p>
-              <p className="detalhes-membro-info-value">{membro.endereco.complemento}</p>
+              <p className="detalhes-membro-info-label">Rua</p>
+              <p className="detalhes-membro-info-value">{exibirOuTraco(membro.endereco.rua)}</p>
             </div>
-          )}
-        </div>
+            <div className="detalhes-membro-info-item">
+              <p className="detalhes-membro-info-label">Número</p>
+              <p className="detalhes-membro-info-value">{exibirOuTraco(membro.endereco.numero)}</p>
+            </div>
+            <div className="detalhes-membro-info-item">
+              <p className="detalhes-membro-info-label">CEP</p>
+              <p className="detalhes-membro-info-value">{exibirOuTraco(formatCEP(membro.endereco.cep) || undefined)}</p>
+            </div>
+            <div className="detalhes-membro-info-item">
+              <p className="detalhes-membro-info-label">Bairro</p>
+              <p className="detalhes-membro-info-value">{exibirOuTraco(membro.endereco.bairro)}</p>
+            </div>
+            <div className="detalhes-membro-info-item">
+              <p className="detalhes-membro-info-label">Cidade</p>
+              <p className="detalhes-membro-info-value">{exibirOuTraco(membro.endereco.cidade)}</p>
+            </div>
+            <div className="detalhes-membro-info-item">
+              <p className="detalhes-membro-info-label">Estado</p>
+              <p className="detalhes-membro-info-value">{exibirOuTraco(membro.endereco.estado)}</p>
+            </div>
+            {membro.endereco.complemento && (
+              <div className="detalhes-membro-info-item">
+                <p className="detalhes-membro-info-label">Complemento</p>
+                <p className="detalhes-membro-info-value">{membro.endereco.complemento}</p>
+              </div>
+            )}
+          </div>
+        )}
       </Card>
     </div>
   );
