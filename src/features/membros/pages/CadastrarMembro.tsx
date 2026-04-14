@@ -53,7 +53,6 @@ export const CadastrarMembro = () => {
     
     const cleanCep = currentCep.replace(/\D/g, '');
     
-    // Valida se o CEP tem 8 dígitos
     if (cleanCep.length !== 8) {
       return;
     }
@@ -63,7 +62,6 @@ export const CadastrarMembro = () => {
       const data = await cepService.buscar(cleanCep);
 
       if (data) {
-        // Usa setTimeout para garantir que os setValue sejam aplicados após o blur
         setTimeout(() => {
           setValue('endereco.rua', data.logradouro || '', { shouldValidate: true, shouldDirty: true });
           setValue('endereco.bairro', data.bairro || '', { shouldValidate: true, shouldDirty: true });
@@ -239,10 +237,12 @@ export const CadastrarMembro = () => {
                 )}
               </div>
 
+              {/* Rua, Bairro, Cidade e Estado desativados — preenchidos automaticamente via API de CEP */}
               <Input
                 label="Rua (opcional)"
                 type="text"
                 error={errors.endereco?.rua?.message}
+                disabled
                 {...register('endereco.rua')}
               />
 
@@ -257,6 +257,7 @@ export const CadastrarMembro = () => {
                 label="Bairro (opcional)"
                 type="text"
                 error={errors.endereco?.bairro?.message}
+                disabled
                 {...register('endereco.bairro')}
               />
 
@@ -264,6 +265,7 @@ export const CadastrarMembro = () => {
                 label="Cidade (opcional)"
                 type="text"
                 error={errors.endereco?.cidade?.message}
+                disabled
                 {...register('endereco.cidade')}
               />
 
@@ -273,6 +275,7 @@ export const CadastrarMembro = () => {
                 maxLength={2}
                 placeholder="UF"
                 error={errors.endereco?.estado?.message}
+                disabled
                 {...register('endereco.estado', {
                   onChange: (e) => {
                     setValue('endereco.estado', e.target.value.toUpperCase());
@@ -307,4 +310,3 @@ export const CadastrarMembro = () => {
     </div>
   );
 };
-
